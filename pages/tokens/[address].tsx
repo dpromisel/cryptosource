@@ -2,10 +2,9 @@ import { Breadcrumbs, Button, Description, Loading, Page, Spacer, Table, Tabs } 
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import useSWR from 'swr'
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import { TableColumnRender } from '@geist-ui/react/dist/table/table-types'
-import { S3 } from 'aws-sdk';
+import AWS, { S3 } from 'aws-sdk';
 
 export type TokenData = {
   uniqueSenders: {
@@ -221,6 +220,18 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
 
   if (context?.params?.address && typeof context.params.address == "string") {
     token = tokens[context.params.address]
+  }
+
+  if (process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE) {
+      AWS.config.update({
+          "accessKeyId": process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE,
+      });
+  }
+
+  if (process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE) {
+      AWS.config.update({
+          "secretAccessKey":process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE
+      });
   }
 
   const tokenData = await getTokenData(context?.params?.address)
