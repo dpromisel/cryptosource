@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import { TableColumnRender } from '@geist-ui/react/dist/table/table-types'
 import AWS, { S3 } from 'aws-sdk';
+import { Readable } from "stream";
 
 export type TokenData = {
   uniqueSenders: {
@@ -30,10 +31,15 @@ export const getTokenData = async (address: any): Promise<TokenData> => {
       return tokenData
   }
 
-  const s3 = new S3({apiVersion: '2006-03-01'});
-  s3.config.update(AWS.config)
-  const slice = 100
+  if (process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE && process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE) {
+    AWS.config.update({
+        "accessKeyId": process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE,
+        "secretAccessKey":process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE
+    });
+}
 
+  const s3 = new S3({apiVersion: '2006-03-01'});
+  const slice = 100
 
   try {
       const uniqObjectParams: S3.GetObjectRequest = {
@@ -60,16 +66,16 @@ export const getTokenData = async (address: any): Promise<TokenData> => {
   }
 
   try {
-      const uniqObjectParams: S3.GetObjectRequest = {
+      const allObjectParams: S3.GetObjectRequest = {
           Key : `dev0/tokens/${address}/all`,
           Bucket: 'canalytics'
       };
   
-      const uniqResp = await s3.getObject(uniqObjectParams).promise()
+      const allResp = await s3.getObject(allObjectParams).promise()
       
-      if (uniqResp && uniqResp?.Body) {
+      if (allResp && allResp?.Body) {
           try {
-              const data = JSON.parse(uniqResp.Body.toString("utf-8"))
+              const data = JSON.parse(allResp.Body.toString("utf-8"))
               if (data.length > slice) {
                   tokenData.repeatSenders = data.slice(0, slice)
               } else {
@@ -222,15 +228,6 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   if (context?.params?.address && typeof context.params.address == "string") {
     token = tokens[context.params.address]
   }
-
-
-  if (process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE && process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE) {
-      AWS.config.update({
-          "accessKeyId": process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE,
-          "secretAccessKey":process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE
-      });
-  }
-
 
   const tokenData = await getTokenData(context?.params?.address)
   
