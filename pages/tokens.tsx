@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { Page, Breadcrumbs, Table } from '@geist-ui/react'
 import { useRouter } from 'next/router';
 import { InferGetStaticPropsType } from 'next'
+import { TableColumnRender } from '@geist-ui/react/dist/table/table-types';
 
 export const getStaticProps = async () => {
     const tokens: {
@@ -70,6 +71,12 @@ export default function Tokens({ tokens }: InferGetStaticPropsType<typeof getSta
     }
     const data = Object.values(tokens)
   
+    const renderAction: TableColumnRender<any> = (value, rowData, index) => {
+        return (
+            <a href={value} target="_blank" rel="noreferrer"> {value}</a>
+        )
+      }
+      
   return (
     <div>
       <Head>
@@ -78,15 +85,15 @@ export default function Tokens({ tokens }: InferGetStaticPropsType<typeof getSta
       <Page >
       <>
       <Breadcrumbs>
-        <Breadcrumbs.Item>Home</Breadcrumbs.Item>
-        <Breadcrumbs.Item>Tokens</Breadcrumbs.Item>
+        <Breadcrumbs.Item onClick={() => router.push("/")}>Home</Breadcrumbs.Item>
+        <Breadcrumbs.Item onClick={() => router.push("/tokens")}>Tokens</Breadcrumbs.Item>
       </Breadcrumbs>
         <h2>Tokens</h2>
         <Table data={data} onRow={row => router.push(`/tokens/${row.address}`)}>
         <Table.Column prop="symbol" label="symbol" />
         <Table.Column prop="name" label="name" />
         <Table.Column prop="address" label="address" />
-        <Table.Column prop="website" label="website" />
+        <Table.Column prop="website" label="website" render={renderAction} />
       </Table>
       </>
       </Page>

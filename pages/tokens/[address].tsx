@@ -249,8 +249,8 @@ const Token = ({ token, uniqueSenders, repeatSenders }: InferGetStaticPropsType<
     <Page >
     <>
     <Breadcrumbs>
-      <Breadcrumbs.Item>Home</Breadcrumbs.Item>
-      <Breadcrumbs.Item> <Link href={"/tokens"}> Tokens </Link></Breadcrumbs.Item>
+      <Breadcrumbs.Item onClick={() => router.push("/")}>Home</Breadcrumbs.Item>
+      <Breadcrumbs.Item onClick={() => router.push("/tokens")}> Tokens </Breadcrumbs.Item>
       <Breadcrumbs.Item> {address} </Breadcrumbs.Item>
     </Breadcrumbs>
           <> 

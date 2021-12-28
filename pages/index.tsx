@@ -1,5 +1,6 @@
 import Head from 'next/head'
-import { Page, Breadcrumbs } from '@geist-ui/react'
+import { Page, Breadcrumbs, Fieldset, Button, Card } from '@geist-ui/react'
+import { useRouter } from 'next/router'
 
 export default function Home() {
   const gh = 'https://github.com/geist-org/react'
@@ -7,6 +8,8 @@ export default function Home() {
   const redirect = (url: string) => {
     window.open(url)
   }
+
+  const router = useRouter()
 
   return (
     <div>
@@ -17,11 +20,16 @@ export default function Home() {
       <Page >
       <>
       <Breadcrumbs>
-        <Breadcrumbs.Item>Home</Breadcrumbs.Item>
+        <Breadcrumbs.Item onClick={() => router.push("/")}>Home</Breadcrumbs.Item>
       </Breadcrumbs>
-        <h2>Hello, Everyone.</h2>
-        <p>This is a simulated page, you can click anywhere to close it.</p>
-      </>
+     
+        <h2> Web3 Community Insights</h2>
+        <Card shadow onClick={() => router.push("/tokens")} hoverable>
+  <h4>Token Communities </h4>
+  <p> Explore the most popular contracts amongst a community of token holders. </p>
+</Card>
+
+           </>
       </Page>
     </div>
   )
