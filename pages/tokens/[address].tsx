@@ -160,7 +160,7 @@ function TokenAggregateTable({ tokenData } : { tokenData: TokenData['repeatSende
     )
   }
 
-      return <Table data={tokenData as any}>
+      return <Table data={tokenData.map(td => ({ ...td, etherscan: ""}))}>
       <Table.Column prop="to" label="to" />
       <Table.Column prop="from" label="from" />
       <Table.Column prop="ContractName" label="Contract Name" />
