@@ -154,7 +154,7 @@ const Token = ({ token, uniqueSenders, repeatSenders }: InferGetStaticPropsType<
 }
 
 function TokenAggregateTable({ tokenData } : { tokenData: TokenData['repeatSenders']}) {
-  const renderAction: TableColumnRender<TokenData['repeatSenders'][0]> = (value, rowData, index) => {
+  const renderAction: TableColumnRender<any> = (value, rowData, index) => {
     return (
       <Button auto scale={1/2} onClick={() => window.open(`https://etherscan.io/address/${rowData.to}`)}> View Address </Button>
     )
