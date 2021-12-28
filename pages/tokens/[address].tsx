@@ -4,10 +4,87 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
-import { getTokenData, TokenData } from '../api/tokens/[address]'
 import { TableColumnRender } from '@geist-ui/react/dist/table/table-types'
+import { S3 } from 'aws-sdk';
+
+export type TokenData = {
+  uniqueSenders: {
+      to: string;
+      from: number;
+      ContractName: string;
+  }[]
+
+  repeatSenders: {
+      to: string;
+      from: number;
+      ContractName: string;
+  }[]
+}
+
+export const getTokenData = async (address: any): Promise<TokenData> => {
+  const tokenData: TokenData = {
+      uniqueSenders: [],
+      repeatSenders: []
+  }
+
+  if (typeof address != 'string') {
+      return tokenData
+  }
+
+  const s3 = new S3({apiVersion: '2006-03-01'});
+  const slice = 100
 
 
+  try {
+      const uniqObjectParams: S3.GetObjectRequest = {
+          Key : `dev0/tokens/${address}/uniq`,
+          Bucket: 'canalytics'
+      };
+  
+      const uniqResp = await s3.getObject(uniqObjectParams).promise()
+      
+      if (uniqResp && uniqResp?.Body) {
+          try {
+              const data = JSON.parse(uniqResp.Body.toString("utf-8"))
+              if (data.length > slice) {
+                  tokenData.uniqueSenders = data.slice(0, slice)
+              } else {
+                  tokenData.uniqueSenders = data
+              }
+          } catch(e) {
+              console.log(e)
+          }
+      }
+  } catch (e) {
+      console.log(e)
+  }
+
+  try {
+      const uniqObjectParams: S3.GetObjectRequest = {
+          Key : `dev0/tokens/${address}/all`,
+          Bucket: 'canalytics'
+      };
+  
+      const uniqResp = await s3.getObject(uniqObjectParams).promise()
+      
+      if (uniqResp && uniqResp?.Body) {
+          try {
+              const data = JSON.parse(uniqResp.Body.toString("utf-8"))
+              if (data.length > slice) {
+                  tokenData.repeatSenders = data.slice(0, slice)
+              } else {
+                  tokenData.repeatSenders = data
+              }            
+          } catch(e) {
+              console.log(e)
+          }
+      }
+  } catch (e) {
+      console.log(e)
+  }
+
+  return tokenData
+}
 
 export async function getStaticPaths() {
   const tokens: {
@@ -154,16 +231,6 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
         ...tokenData
     }
   }
-}
-
-const fetcher = async (url: string) => {
-  const res = await fetch(url)
-  const data = await res.json()
-
-  if (res.status !== 200) {
-    throw new Error(data.message)
-  }
-  return data
 }
 
 const Token = ({ token, uniqueSenders, repeatSenders }: InferGetStaticPropsType<typeof getStaticProps>) => {
