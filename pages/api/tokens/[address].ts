@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import aws, { S3 } from 'aws-sdk';
-import { PromiseResult } from 'aws-sdk/lib/request';
+import AWS, { S3 } from 'aws-sdk';
+
 
 type Data = {
     data: any
@@ -16,6 +16,18 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+
+    if (process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE) {
+        AWS.config.update({
+            "accessKeyId": process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE,
+        });
+    }
+
+    if (process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE) {
+        AWS.config.update({
+            "secretAccessKey":process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE
+        });
+    }
 
     try {
         const s3 = new S3({apiVersion: '2006-03-01'});
