@@ -66,6 +66,8 @@ export const getStaticProps = async () => {
 
 export default function Tokens({ tokens }: InferGetStaticPropsType<typeof getStaticProps>) {
     const router = useRouter()
+    const { visible, setVisible, bindings } = useModal()
+
     if (!tokens) {
         return <> Loading...</>
     }
@@ -76,7 +78,6 @@ export default function Tokens({ tokens }: InferGetStaticPropsType<typeof getSta
             <a href={value} target="_blank" rel="noreferrer"> {value}</a>
         )
       }
-      const { visible, setVisible, bindings } = useModal()
 
   return (
     <div>
