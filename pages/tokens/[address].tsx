@@ -7,11 +7,71 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import { getTokenData, TokenData } from '../api/tokens/[address]'
 import { TableColumnRender } from '@geist-ui/react/dist/table/table-types'
 
+
+
 export async function getStaticPaths() {
+  const tokens: {
+    [address: string]: {
+            symbol: string;
+            name: string;
+            address: string;
+            website: string;
+    }
+  } = {
+    "0xCCac1187F4439E6ff02De97B16fF40BD2E7c8080": {
+            symbol: "$ZERO",
+            name: "Mad Realities: Season Zero",
+            address: "0xCCac1187F4439E6ff02De97B16fF40BD2E7c8080",
+            website: "https://www.madrealities.xyz/"
+    },
+    "0x5d1E816D60E42E5f8849eC802d5a4C9c48e662aA": {
+            symbol: "SASSY",
+            name: "SassyBlack",
+            address: "0x5d1E816D60E42E5f8849eC802d5a4C9c48e662aA",
+            website: "https://www.sound.xyz/sassyblack"
+    },
+    "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03": {
+            symbol: "NOUN",
+            name: "Nouns",
+            address: "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03",
+            website: "https://nouns.wtf/"
+    },
+    "0xeaCa6dc08AFf2694366c4405724973e2Ac7E49E9": {
+            symbol: "Giraffage",
+            name: "Giraffage",
+            address: "0xeaCa6dc08AFf2694366c4405724973e2Ac7E49E9",
+            website: "https://www.sound.xyz/giraffage"
+    },
+    "0xBF0631a1d679D36f51D0edCaBc06842679053ae5": {
+            symbol: "BESTIES",
+            name: "Crypto Besties",
+            address: "0xBF0631a1d679D36f51D0edCaBc06842679053ae5",
+            website: "https://linktr.ee/Cryptobesties"
+    },
+    "0x622236bb180256b6ae1a935dae08dc0356141632": {
+            symbol: "WRITE",
+            name: "Mirror Write Token",
+            address: "0x622236bb180256b6ae1a935dae08dc0356141632",
+            website: "https://mirror.xyz/"
+    },
+    "0x9e04f519b094f5f8210441e285f603f4d2b50084": {
+            symbol: "$1EARTH",
+            name: "Earth Fund",
+            address: "0x9e04f519b094f5f8210441e285f603f4d2b50084",
+            website: "https://www.earthfund.io/"
+    }
+  }
+
+  const paths = Object.keys(tokens).map(address => {
+    return {
+      params: {
+        address
+      }
+    }
+  });
+
   return {
-    paths: [
-      { params: { address: '' } },
-    ],
+    paths: paths,
     fallback: true
   };
 }
@@ -19,55 +79,55 @@ export async function getStaticPaths() {
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
   const tokens: {
-      [address: string]: {
-              symbol: string;
-              name: string;
-              address: string;
-              website: string;
-      }
+    [address: string]: {
+            symbol: string;
+            name: string;
+            address: string;
+            website: string;
+    }
   } = {
-      "0xCCac1187F4439E6ff02De97B16fF40BD2E7c8080": {
-              symbol: "$ZERO",
-              name: "Mad Realities: Season Zero",
-              address: "0xCCac1187F4439E6ff02De97B16fF40BD2E7c8080",
-              website: "https://www.madrealities.xyz/"
-      },
-      "0x5d1E816D60E42E5f8849eC802d5a4C9c48e662aA": {
-              symbol: "SASSY",
-              name: "SassyBlack",
-              address: "0x5d1E816D60E42E5f8849eC802d5a4C9c48e662aA",
-              website: "https://www.sound.xyz/sassyblack"
-      },
-      "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03": {
-              symbol: "NOUN",
-              name: "Nouns",
-              address: "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03",
-              website: "https://nouns.wtf/"
-      },
-      "0xeaCa6dc08AFf2694366c4405724973e2Ac7E49E9": {
-              symbol: "Giraffage",
-              name: "Giraffage",
-              address: "0xeaCa6dc08AFf2694366c4405724973e2Ac7E49E9",
-              website: "https://www.sound.xyz/giraffage"
-      },
-      "0xBF0631a1d679D36f51D0edCaBc06842679053ae5": {
-              symbol: "BESTIES",
-              name: "Crypto Besties",
-              address: "0xBF0631a1d679D36f51D0edCaBc06842679053ae5",
-              website: "https://linktr.ee/Cryptobesties"
-      },
-      "0x622236bb180256b6ae1a935dae08dc0356141632": {
-              symbol: "WRITE",
-              name: "Mirror Write Token",
-              address: "0x622236bb180256b6ae1a935dae08dc0356141632",
-              website: "https://mirror.xyz/"
-      },
-      "0x9e04f519b094f5f8210441e285f603f4d2b50084": {
-              symbol: "$1EARTH",
-              name: "Earth Fund",
-              address: "0x9e04f519b094f5f8210441e285f603f4d2b50084",
-              website: "https://www.earthfund.io/"
-      }
+    "0xCCac1187F4439E6ff02De97B16fF40BD2E7c8080": {
+            symbol: "$ZERO",
+            name: "Mad Realities: Season Zero",
+            address: "0xCCac1187F4439E6ff02De97B16fF40BD2E7c8080",
+            website: "https://www.madrealities.xyz/"
+    },
+    "0x5d1E816D60E42E5f8849eC802d5a4C9c48e662aA": {
+            symbol: "SASSY",
+            name: "SassyBlack",
+            address: "0x5d1E816D60E42E5f8849eC802d5a4C9c48e662aA",
+            website: "https://www.sound.xyz/sassyblack"
+    },
+    "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03": {
+            symbol: "NOUN",
+            name: "Nouns",
+            address: "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03",
+            website: "https://nouns.wtf/"
+    },
+    "0xeaCa6dc08AFf2694366c4405724973e2Ac7E49E9": {
+            symbol: "Giraffage",
+            name: "Giraffage",
+            address: "0xeaCa6dc08AFf2694366c4405724973e2Ac7E49E9",
+            website: "https://www.sound.xyz/giraffage"
+    },
+    "0xBF0631a1d679D36f51D0edCaBc06842679053ae5": {
+            symbol: "BESTIES",
+            name: "Crypto Besties",
+            address: "0xBF0631a1d679D36f51D0edCaBc06842679053ae5",
+            website: "https://linktr.ee/Cryptobesties"
+    },
+    "0x622236bb180256b6ae1a935dae08dc0356141632": {
+            symbol: "WRITE",
+            name: "Mirror Write Token",
+            address: "0x622236bb180256b6ae1a935dae08dc0356141632",
+            website: "https://mirror.xyz/"
+    },
+    "0x9e04f519b094f5f8210441e285f603f4d2b50084": {
+            symbol: "$1EARTH",
+            name: "Earth Fund",
+            address: "0x9e04f519b094f5f8210441e285f603f4d2b50084",
+            website: "https://www.earthfund.io/"
+    }
   }
 
   let token: {
@@ -130,10 +190,10 @@ const Token = ({ token, uniqueSenders, repeatSenders }: InferGetStaticPropsType<
               <Description title="Name" content={token.name} />
               <Spacer h={1}/>
 
-              <Description title="Website" content={<a href={token.website} target="_blank"> {token.website}</a>} />
+              <Description title="Website" content={<a href={token.website} target="_blank" rel="noreferrer"> {token.website}</a>} />
               <Spacer h={1}/>
 
-              <Description title={<a href={`https://etherscan.io/token/${address}`} target="_blank"> Etherscan </a>} />
+              <Description title={<a href={`https://etherscan.io/token/${address}`} target="_blank" rel="noreferrer"> Etherscan </a>} />
               <Spacer h={2}/>
 
             </> : <p> No token data </p> }
@@ -160,12 +220,12 @@ function TokenAggregateTable({ tokenData } : { tokenData: TokenData['repeatSende
     )
   }
 
-      return <Table data={tokenData.map(td => ({ ...td, etherscan: ""}))}>
-      <Table.Column prop="to" label="to" />
-      <Table.Column prop="from" label="from" />
-      <Table.Column prop="ContractName" label="Contract Name" />
-      <Table.Column prop="etherscan" label="Etherscan" render={renderAction} />
-      </Table>
+  return <Table data={tokenData?.length ? tokenData.map(td => ({ ...td, etherscan: ""})) : []}>
+    <Table.Column prop="to" label="to" />
+    <Table.Column prop="from" label="from" />
+    <Table.Column prop="ContractName" label="Contract Name" />
+    <Table.Column prop="etherscan" label="Etherscan" render={renderAction} />
+  </Table>
 }
 
 export default Token
