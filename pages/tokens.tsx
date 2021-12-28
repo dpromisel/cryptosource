@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { Page, Breadcrumbs, Table } from '@geist-ui/react'
+import { Page, Breadcrumbs, Table, useModal, Button, Modal, Spacer, Input } from '@geist-ui/react'
 import { useRouter } from 'next/router';
 import { InferGetStaticPropsType } from 'next'
 import { TableColumnRender } from '@geist-ui/react/dist/table/table-types';
@@ -76,7 +76,8 @@ export default function Tokens({ tokens }: InferGetStaticPropsType<typeof getSta
             <a href={value} target="_blank" rel="noreferrer"> {value}</a>
         )
       }
-      
+      const { visible, setVisible, bindings } = useModal()
+
   return (
     <div>
       <Head>
@@ -89,6 +90,23 @@ export default function Tokens({ tokens }: InferGetStaticPropsType<typeof getSta
         <Breadcrumbs.Item onClick={() => router.push("/tokens")}>Tokens</Breadcrumbs.Item>
       </Breadcrumbs>
         <h2>Tokens</h2>
+        <Button auto onClick={() => setVisible(true)}> Index New Token </Button>
+        <Spacer h={2} />
+        <Modal {...bindings}>
+        <Modal.Title> New Token </Modal.Title>
+        <Modal.Subtitle> Request a token to be indexed  </Modal.Subtitle>
+        <Modal.Content>
+            <Input width="100%" placeholder="Token Address" />
+            <Spacer h={1} />
+            <Input width="100%" placeholder="Token Name" />
+            <Spacer h={1} />
+            <Input width="100%" placeholder="Token Website" />
+            <Spacer h={1} />
+            <Input width="100%" placeholder="Token Symbol" />
+        </Modal.Content>
+        <Modal.Action passive onClick={() => setVisible(false)}>Cancel</Modal.Action>
+        <Modal.Action onClick={() => setVisible(false)}>Submit</Modal.Action>
+      </Modal>
         <Table data={data} onRow={row => router.push(`/tokens/${row.address}`)}>
         <Table.Column prop="symbol" label="symbol" />
         <Table.Column prop="name" label="name" />
