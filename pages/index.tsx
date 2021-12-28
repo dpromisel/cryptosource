@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { Page, Breadcrumbs, Fieldset, Button, Card } from '@geist-ui/react'
 import { useRouter } from 'next/router'
+import Particles from 'react-tsparticles'
 
 export default function Home() {
   const gh = 'https://github.com/geist-org/react'
@@ -14,7 +15,7 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Geist UI with NextJS</title>
+        <title> Cryptosource </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Page >
