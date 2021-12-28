@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { Page, Text, Image, Display, Button, Grid, Breadcrumbs } from '@geist-ui/react'
+import { Page, Breadcrumbs } from '@geist-ui/react'
 
 export default function Home() {
   const gh = 'https://github.com/geist-org/react'

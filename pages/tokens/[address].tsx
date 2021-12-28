@@ -224,14 +224,9 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   }
 
 
-  if (process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE) {
+  if (process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE && process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE) {
       AWS.config.update({
           "accessKeyId": process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE,
-      });
-  }
-
-  if (process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE) {
-      AWS.config.update({
           "secretAccessKey":process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE
       });
   }
