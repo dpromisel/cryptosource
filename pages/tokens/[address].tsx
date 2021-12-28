@@ -31,6 +31,7 @@ export const getTokenData = async (address: any): Promise<TokenData> => {
   }
 
   const s3 = new S3({apiVersion: '2006-03-01'});
+  s3.config.update(AWS.config)
   const slice = 100
 
 
@@ -222,6 +223,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     token = tokens[context.params.address]
   }
 
+
   if (process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE) {
       AWS.config.update({
           "accessKeyId": process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE,
@@ -233,6 +235,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
           "secretAccessKey":process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE
       });
   }
+
 
   const tokenData = await getTokenData(context?.params?.address)
   
