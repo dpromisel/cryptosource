@@ -5,7 +5,7 @@ import { InferGetStaticPropsType } from 'next'
 import { TableColumnRender } from '@geist-ui/react/dist/table/table-types';
 import { supabase } from '../utils/supabaseClient';
 import { definitions } from "../types/supabase";
-import NewToken from '../components/newToken';
+import NewToken from '../components/NewToken';
 
 export const getStaticProps = async () => {
     let { data: tokens, error } = await supabase
