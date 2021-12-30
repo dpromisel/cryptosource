@@ -1,12 +1,12 @@
 import Head from 'next/head'
-import { Page, Breadcrumbs, Fieldset, Button, Card } from '@geist-ui/react'
+import { Page, Breadcrumbs, Fieldset, Button, Card, Spacer } from '@geist-ui/react'
 import { useRouter } from 'next/router'
 import {
   injected,
 } from '../connectors'
 import { useWeb3React, Web3ReactProvider } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
-import React from 'react'
+import React, { useState } from 'react'
 import Particles from 'react-tsparticles'
 
 function getLibrary(provider: any): Web3Provider {
@@ -24,7 +24,8 @@ export default function App() {
 }
 
 function Home() {
-  const { activate, account, active, chainId, library } = useWeb3React<Web3Provider>()
+  const { activate, account, active, chainId, library, deactivate } = useWeb3React<Web3Provider>()
+  const [txCount, setTxCount] = useState(0)
   // const { connector, library, chainId, account, activate, deactivate, active, error } = context
   
   const gh = 'https://github.com/geist-org/react'
@@ -37,7 +38,7 @@ function Home() {
     async function loadData() {
       if (!!library && account) {
         const response = await library.getTransactionCount(account)
-        console.log(response)
+        setTxCount(response)
       }
     }
 
@@ -139,9 +140,20 @@ function Home() {
   <h4>Token Communities </h4>
   <p> Explore the most popular contracts amongst a community of token holders. </p>
 </Card>
+<Spacer h={1} />
+<Card shadow onClick={() => router.push("/builds")} hoverable>
+  <h4> Builds </h4>
+  <p> Check out all of the builds. </p>
+</Card>
+<Spacer h={1} />
+
+
+{active ? <> <Button onClick={() => {
+                deactivate()
+              }}> Disconnect Wallet </Button>  <Spacer h={1} /> <p> Transaction Count: {txCount}</p></>: 
 <Button onClick={() => {
                 activate(injected)
-              }}> Injected </Button>
+              }}> Connect Browser Wallet </Button> }
 
  </>
       </Page>
