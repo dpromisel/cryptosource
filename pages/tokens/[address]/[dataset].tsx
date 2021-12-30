@@ -29,77 +29,6 @@ type CommunityDataset = {
     ContractName: string;
 }[]
 
-// export const getTokenData = async (address: any): Promise<TokenData> => {
-//   const tokenData: TokenData = {
-//       uniqueSenders: [],
-//       repeatSenders: []
-//   }
-
-//   if (typeof address != 'string') {
-//       return tokenData
-//   }
-
-//   if (process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE && process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE) {
-//     AWS.config.update({
-//         "accessKeyId": process.env.AWS_ACCESS_KEY_ID_CRYPTOSOURCE,
-//         "secretAccessKey":process.env.AWS_ACCESS_SECRET_CRYPTOSOURCE
-//     });
-// }
-
-//   const s3 = new S3({apiVersion: '2006-03-01'});
-//   const slice = 100
-
-//   try {
-//       const uniqObjectParams: S3.GetObjectRequest = {
-//           Key : `dev0/tokens/${address}/uniq`,
-//           Bucket: 'canalytics'
-//       };
-  
-//       const uniqResp = await s3.getObject(uniqObjectParams).promise()
-      
-//       if (uniqResp && uniqResp?.Body) {
-//           try {
-//               const data = JSON.parse(uniqResp.Body.toString("utf-8"))
-//               if (data.length > slice) {
-//                   tokenData.uniqueSenders = data.slice(0, slice)
-//               } else {
-//                   tokenData.uniqueSenders = data
-//               }
-//           } catch(e) {
-//               console.log(e)
-//           }
-//       }
-//   } catch (e) {
-//       console.log(e)
-//   }
-
-//   try {
-//       const allObjectParams: S3.GetObjectRequest = {
-//           Key : `dev0/tokens/${address}/all`,
-//           Bucket: 'canalytics'
-//       };
-  
-//       const allResp = await s3.getObject(allObjectParams).promise()
-      
-//       if (allResp && allResp?.Body) {
-//           try {
-//               const data = JSON.parse(allResp.Body.toString("utf-8"))
-//               if (data.length > slice) {
-//                   tokenData.repeatSenders = data.slice(0, slice)
-//               } else {
-//                   tokenData.repeatSenders = data
-//               }            
-//           } catch(e) {
-//               console.log(e)
-//           }
-//       }
-//   } catch (e) {
-//       console.log(e)
-//   }
-
-//   return tokenData
-// }
-
 const getDataset = async (address: string, root: string, key: string): Promise<CommunityDataset> => {
     let dataset: CommunityDataset = []
     if (typeof address != 'string') {
@@ -190,25 +119,6 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       builds = buildsResp
     }
   }
-
-//   if (context?.params?.address && typeof context.params.address == "string") {
-//     const { data: tokens, error } = await supabase
-//             .from<definitions["tokens"]>('tokens')
-//             .select("*")
-//             .eq("address", context.params.address)
-
-//     if (tokens && tokens.length > 0) {
-//       token = tokens[0]
-//     }
-
-    
-//   }
-
-
-  
-
-
-  // const tokenData = await getTokenData(context?.params?.address)
   
   return {
     props: {
@@ -223,6 +133,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
 const Token = ({ token, dataset, builds, communityDataset }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter()
   const { address, dataset: datasetKey } = router.query
+
 
   return <div>
     <Head>
@@ -251,7 +162,7 @@ const Token = ({ token, dataset, builds, communityDataset }: InferGetStaticProps
 
            <Tabs initialValue="1">
                 <Tabs.Item label="Dataset" value="1">
-                  <TokenAggregateTable dataset={communityDataset} />
+                  {communityDataset && <TokenAggregateTable dataset={communityDataset} />}
                 </Tabs.Item>
                 <Tabs.Item label="Build History" value="2">
                     <BuildTable builds={builds} />
@@ -270,7 +181,8 @@ function TokenAggregateTable({ dataset } : { dataset: CommunityDataset }) {
     )
   }
 
-  return <Table data={dataset?.length ? dataset.map(td => ({ ...td, etherscan: ""})) : []}>
+  if (!dataset) return null
+  return <Table data={dataset?.length ? dataset?.map(td => ({ ...td, etherscan: ""})) : []}>
     <Table.Column prop="to" label="to" />
     <Table.Column prop="from" label="from" />
     <Table.Column prop="ContractName" label="Contract Name" />

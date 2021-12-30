@@ -14,6 +14,8 @@ function BuildTable({ builds } : { builds: definitions["builds"][] }) {
     <Table.Column prop="datasets" label="Dataset" render={renderDatasetName} />
     <Table.Column prop="status" label="Status" />
     <Table.Column prop="submitted" label="Submitted at" />
+    <Table.Column prop="finished" label="Finished at" />
+    <Table.Column prop="api_requests" label="Cost" />
   </Table>
 }
 

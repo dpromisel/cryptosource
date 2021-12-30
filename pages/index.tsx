@@ -7,6 +7,7 @@ import {
 import { useWeb3React, Web3ReactProvider } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import React from 'react'
+import Particles from 'react-tsparticles'
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider)
@@ -51,8 +52,84 @@ function Home() {
         <title> Cryptosource </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <div style={{ position: 'absolute'}}>
+        <Particles height="100vh" width="100vw" params={{
+        background: {
+          color: {
+            value: "#d9e3f0",
+          },
+        },
+        fpsLimit: 60,
+        interactivity: {
+          events: {
+            onHover: {
+              enable: true,
+              mode: "repulse",
+            },
+            resize: true,
+          },
+          modes: {
+            bubble: {
+              distance: 400,
+              duration: 2,
+              opacity: 0.8,
+              size: 40,
+            },
+            push: {
+              quantity: 4,
+            },
+            repulse: {
+              distance: 100,
+              duration: 0.4,
+            },
+          },
+        },
+        particles: {
+          color: {
+            value: "#ffffff",
+          },
+          links: {
+            color: "#ffffff",
+            distance: 300,
+            enable: true,
+            opacity: 0.5,
+            width: 1,
+          },
+          collisions: {
+            enable: true,
+          },
+          move: {
+            direction: "none",
+            enable: true,
+            outMode: "bounce",
+            random: true,
+            speed: 2,
+            straight: false,
+          },
+          number: {
+            density: {
+              enable: true,
+              area: 800,
+            },
+            value: 60,
+          },
+          opacity: {
+            value: 0.5,
+          },
+          shape: {
+            type: "circle",
+          },
+          size: {
+            random: true,
+            value: 5,
+          },
+        },
+        detectRetina: true,
+      }} />
+      </div>
       <Page>
       <>
+      
       <Breadcrumbs>
         <Breadcrumbs.Item onClick={() => router.push("/")}>Home</Breadcrumbs.Item>
       </Breadcrumbs>
