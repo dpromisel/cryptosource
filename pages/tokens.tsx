@@ -1,13 +1,13 @@
 import Head from 'next/head'
 import { Page, Breadcrumbs, Table, useModal, Button, Modal, Spacer, Input } from '@geist-ui/react'
 import { useRouter } from 'next/router';
-import { InferGetStaticPropsType } from 'next'
+import { InferGetServerSidePropsType } from 'next'
 import { TableColumnRender } from '@geist-ui/react/dist/table/table-types';
 import { supabase } from '../utils/supabaseClient';
 import { definitions } from "../types/supabase";
 import NewToken from '../components/NewToken';
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
     let { data: tokens, error } = await supabase
             .from<definitions["tokens"]>('tokens')
             .select("*")
@@ -27,7 +27,7 @@ export const getStaticProps = async () => {
     }
 }
 
-export default function Tokens({ tokens }: InferGetStaticPropsType<typeof getStaticProps>) {
+export default function Tokens({ tokens }: InferGetServerSidePropsType<typeof getServerSideProps>) {
     const router = useRouter()
 
     if (!tokens) {

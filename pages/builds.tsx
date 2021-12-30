@@ -1,14 +1,14 @@
 import { Breadcrumbs, Page } from '@geist-ui/react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next'
 import AWS, { S3 } from 'aws-sdk';
 import { supabase } from '../utils/supabaseClient'
 import { definitions } from '../types/supabase'
 import BuildTable from '../components/BuildTable'
 
 
-export const getStaticProps = async (context: GetStaticPropsContext) => {
+export const getServerSideProps = async (context: GetServerSideProps) => {
 
   let builds: definitions["builds"][] = []
 
@@ -29,7 +29,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   }
 }
 
-const Builds = ({ builds }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Builds = ({ builds }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter()
 
   return <div>

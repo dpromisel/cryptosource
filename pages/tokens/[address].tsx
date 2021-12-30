@@ -2,10 +2,9 @@ import { Breadcrumbs, Button, Description, Loading, Page, Spacer, Table, Tabs, u
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import { TableColumnRender } from '@geist-ui/react/dist/table/table-types'
 import AWS, { S3 } from 'aws-sdk';
-import { Readable } from "stream";
 import { supabase } from '../../utils/supabaseClient'
 import { definitions } from '../../types/supabase'
 import BuildTable from '../../components/BuildTable'
@@ -95,30 +94,30 @@ export const getTokenData = async (address: any): Promise<TokenData> => {
   return tokenData
 }
 
-export async function getStaticPaths() {
-  const { data: tokensAddresses, error } = await supabase
-            .from<definitions["tokens"]>('tokens')
-            .select("address")
+// export async function getStaticPaths() {
+//   const { data: tokensAddresses, error } = await supabase
+//             .from<definitions["tokens"]>('tokens')
+//             .select("address")
 
-  let paths: any = [];
-  if (tokensAddresses && tokensAddresses.length) {
-    paths = tokensAddresses.map(token => {
-      return {
-        params: {
-          address: token.address
-        }
-      }
-    });
-  }
+//   let paths: any = [];
+//   if (tokensAddresses && tokensAddresses.length) {
+//     paths = tokensAddresses.map(token => {
+//       return {
+//         params: {
+//           address: token.address
+//         }
+//       }
+//     });
+//   }
   
-    return {
-      paths: paths,
-      fallback: true
-    };  
-}
+//     return {
+//       paths: paths,
+//       fallback: true
+//     };  
+// }
 
 
-export const getStaticProps = async (context: GetStaticPropsContext) => {
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
   let token: Partial<definitions["tokens"]> = {
     symbol: '',
@@ -169,7 +168,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   }
 }
 
-const Token = ({ token, datasets, builds }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Token = ({ token, datasets, builds }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter()
   const { address } = router.query
 

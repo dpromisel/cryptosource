@@ -2,7 +2,7 @@ import { Breadcrumbs, Button, Description, Loading, Page, Spacer, Table, Tabs, u
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
 import { TableColumnRender } from '@geist-ui/react/dist/table/table-types'
 import AWS, { S3 } from 'aws-sdk';
 import { supabase } from '../../../utils/supabaseClient'
@@ -72,17 +72,8 @@ const getDataset = async (address: string, root: string, key: string): Promise<C
     return dataset
 }
 
-export async function getStaticPaths() {
-  let paths: any = [];
-  
-    return {
-      paths: paths,
-      fallback: true
-    };  
-}
 
-
-export const getStaticProps = async (context: GetStaticPropsContext) => {
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
 
   let token: Partial<definitions["tokens"]> = {
     symbol: '',
@@ -130,7 +121,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   }
 }
 
-const Token = ({ token, dataset, builds, communityDataset }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Token = ({ token, dataset, builds, communityDataset }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter()
   const { address, dataset: datasetKey } = router.query
 

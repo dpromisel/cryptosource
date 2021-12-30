@@ -1,8 +1,6 @@
 import Head from 'next/head'
 import { Page, Breadcrumbs, Table, useModal, Button, Modal, Spacer, Input } from '@geist-ui/react'
 import { useRouter } from 'next/router';
-import { InferGetStaticPropsType } from 'next'
-import { TableColumnRender } from '@geist-ui/react/dist/table/table-types';
 import { supabase } from '../utils/supabaseClient';
 import { definitions } from "../types/supabase";
 import { useState } from 'react';
