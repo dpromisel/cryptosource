@@ -19,7 +19,7 @@ export interface paths {
           id?: parameters["rowFilter.builds.id"];
           submitted?: parameters["rowFilter.builds.submitted"];
           dataset?: parameters["rowFilter.builds.dataset"];
-          completed?: parameters["rowFilter.builds.completed"];
+          finished?: parameters["rowFilter.builds.finished"];
           status?: parameters["rowFilter.builds.status"];
           api_requests?: parameters["rowFilter.builds.api_requests"];
           address?: parameters["rowFilter.builds.address"];
@@ -76,7 +76,7 @@ export interface paths {
           id?: parameters["rowFilter.builds.id"];
           submitted?: parameters["rowFilter.builds.submitted"];
           dataset?: parameters["rowFilter.builds.dataset"];
-          completed?: parameters["rowFilter.builds.completed"];
+          finished?: parameters["rowFilter.builds.finished"];
           status?: parameters["rowFilter.builds.status"];
           api_requests?: parameters["rowFilter.builds.api_requests"];
           address?: parameters["rowFilter.builds.address"];
@@ -97,7 +97,7 @@ export interface paths {
           id?: parameters["rowFilter.builds.id"];
           submitted?: parameters["rowFilter.builds.submitted"];
           dataset?: parameters["rowFilter.builds.dataset"];
-          completed?: parameters["rowFilter.builds.completed"];
+          finished?: parameters["rowFilter.builds.finished"];
           status?: parameters["rowFilter.builds.status"];
           api_requests?: parameters["rowFilter.builds.api_requests"];
           address?: parameters["rowFilter.builds.address"];
@@ -346,7 +346,7 @@ export interface definitions {
      */
     dataset?: number;
     /** Format: timestamp with time zone */
-    completed?: string;
+    finished?: string;
     /** Format: text */
     status: string;
     /** Format: bigint */
@@ -441,7 +441,7 @@ export interface parameters {
   /** Format: bigint */
   "rowFilter.builds.dataset": string;
   /** Format: timestamp with time zone */
-  "rowFilter.builds.completed": string;
+  "rowFilter.builds.finished": string;
   /** Format: text */
   "rowFilter.builds.status": string;
   /** Format: bigint */
