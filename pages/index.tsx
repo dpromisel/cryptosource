@@ -14,7 +14,7 @@ function getLibrary(provider: any): Web3Provider {
   return library
 }
 
-export default function() {
+export default function App() {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Home />
@@ -26,7 +26,6 @@ function Home() {
   const { activate, account, active, chainId, library } = useWeb3React<Web3Provider>()
   // const { connector, library, chainId, account, activate, deactivate, active, error } = context
   
-  console.log(account, active, chainId)
   const gh = 'https://github.com/geist-org/react'
   const docs = 'https://react.geist-ui.dev'
   const redirect = (url: string) => {

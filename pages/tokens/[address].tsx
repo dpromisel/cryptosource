@@ -185,8 +185,8 @@ const Token = ({ token, datasets, builds }: InferGetStaticPropsType<typeof getSt
       <Breadcrumbs.Item> {address} </Breadcrumbs.Item>
     </Breadcrumbs>
           <> 
-            <h2>{token.name}</h2>
             {token ? <> 
+              <h2>{token.name}</h2>
               <Description title="Symbol" content={token.symbol} />
               <Spacer h={1}/>
 
