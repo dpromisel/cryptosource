@@ -1,4 +1,4 @@
-import { Breadcrumbs, Button, Description, Loading, Page, Spacer, Table, Tabs } from '@geist-ui/react'
+import { Breadcrumbs, Button, Description, Loading, Page, Spacer, Table, Tabs, useToasts } from '@geist-ui/react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -6,6 +6,9 @@ import { GetStaticPropsContext, InferGetStaticPropsType } from 'next'
 import { TableColumnRender } from '@geist-ui/react/dist/table/table-types'
 import AWS, { S3 } from 'aws-sdk';
 import { Readable } from "stream";
+import { supabase } from '../../utils/supabaseClient'
+import { definitions } from '../../types/supabase'
+import BuildTable from '../../components/BuildTable'
 
 export type TokenData = {
   uniqueSenders: {
@@ -93,155 +96,83 @@ export const getTokenData = async (address: any): Promise<TokenData> => {
 }
 
 export async function getStaticPaths() {
-  const tokens: {
-    [address: string]: {
-            symbol: string;
-            name: string;
-            address: string;
-            website: string;
-    }
-  } = {
-    "0xCCac1187F4439E6ff02De97B16fF40BD2E7c8080": {
-            symbol: "$ZERO",
-            name: "Mad Realities: Season Zero",
-            address: "0xCCac1187F4439E6ff02De97B16fF40BD2E7c8080",
-            website: "https://www.madrealities.xyz/"
-    },
-    "0x5d1E816D60E42E5f8849eC802d5a4C9c48e662aA": {
-            symbol: "SASSY",
-            name: "SassyBlack",
-            address: "0x5d1E816D60E42E5f8849eC802d5a4C9c48e662aA",
-            website: "https://www.sound.xyz/sassyblack"
-    },
-    "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03": {
-            symbol: "NOUN",
-            name: "Nouns",
-            address: "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03",
-            website: "https://nouns.wtf/"
-    },
-    "0xeaCa6dc08AFf2694366c4405724973e2Ac7E49E9": {
-            symbol: "Giraffage",
-            name: "Giraffage",
-            address: "0xeaCa6dc08AFf2694366c4405724973e2Ac7E49E9",
-            website: "https://www.sound.xyz/giraffage"
-    },
-    "0xBF0631a1d679D36f51D0edCaBc06842679053ae5": {
-            symbol: "BESTIES",
-            name: "Crypto Besties",
-            address: "0xBF0631a1d679D36f51D0edCaBc06842679053ae5",
-            website: "https://linktr.ee/Cryptobesties"
-    },
-    "0x622236bb180256b6ae1a935dae08dc0356141632": {
-            symbol: "WRITE",
-            name: "Mirror Write Token",
-            address: "0x622236bb180256b6ae1a935dae08dc0356141632",
-            website: "https://mirror.xyz/"
-    },
-    "0x9e04f519b094f5f8210441e285f603f4d2b50084": {
-            symbol: "$1EARTH",
-            name: "Earth Fund",
-            address: "0x9e04f519b094f5f8210441e285f603f4d2b50084",
-            website: "https://www.earthfund.io/"
-    }
-  }
+  const { data: tokensAddresses, error } = await supabase
+            .from<definitions["tokens"]>('tokens')
+            .select("address")
 
-  const paths = Object.keys(tokens).map(address => {
-    return {
-      params: {
-        address
+  let paths: any = [];
+  if (tokensAddresses && tokensAddresses.length) {
+    paths = tokensAddresses.map(token => {
+      return {
+        params: {
+          address: token.address
+        }
       }
-    }
-  });
-
-  return {
-    paths: paths,
-    fallback: true
-  };
+    });
+  }
+  
+    return {
+      paths: paths,
+      fallback: true
+    };  
 }
 
 
 export const getStaticProps = async (context: GetStaticPropsContext) => {
-  const tokens: {
-    [address: string]: {
-            symbol: string;
-            name: string;
-            address: string;
-            website: string;
-    }
-  } = {
-    "0xCCac1187F4439E6ff02De97B16fF40BD2E7c8080": {
-            symbol: "$ZERO",
-            name: "Mad Realities: Season Zero",
-            address: "0xCCac1187F4439E6ff02De97B16fF40BD2E7c8080",
-            website: "https://www.madrealities.xyz/"
-    },
-    "0x5d1E816D60E42E5f8849eC802d5a4C9c48e662aA": {
-            symbol: "SASSY",
-            name: "SassyBlack",
-            address: "0x5d1E816D60E42E5f8849eC802d5a4C9c48e662aA",
-            website: "https://www.sound.xyz/sassyblack"
-    },
-    "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03": {
-            symbol: "NOUN",
-            name: "Nouns",
-            address: "0x9c8ff314c9bc7f6e59a9d9225fb22946427edc03",
-            website: "https://nouns.wtf/"
-    },
-    "0xeaCa6dc08AFf2694366c4405724973e2Ac7E49E9": {
-            symbol: "Giraffage",
-            name: "Giraffage",
-            address: "0xeaCa6dc08AFf2694366c4405724973e2Ac7E49E9",
-            website: "https://www.sound.xyz/giraffage"
-    },
-    "0xBF0631a1d679D36f51D0edCaBc06842679053ae5": {
-            symbol: "BESTIES",
-            name: "Crypto Besties",
-            address: "0xBF0631a1d679D36f51D0edCaBc06842679053ae5",
-            website: "https://linktr.ee/Cryptobesties"
-    },
-    "0x622236bb180256b6ae1a935dae08dc0356141632": {
-            symbol: "WRITE",
-            name: "Mirror Write Token",
-            address: "0x622236bb180256b6ae1a935dae08dc0356141632",
-            website: "https://mirror.xyz/"
-    },
-    "0x9e04f519b094f5f8210441e285f603f4d2b50084": {
-            symbol: "$1EARTH",
-            name: "Earth Fund",
-            address: "0x9e04f519b094f5f8210441e285f603f4d2b50084",
-            website: "https://www.earthfund.io/"
-    }
-  }
 
-  let token: {
-    symbol: string;
-    name: string;
-    address: string;
-    website: string;
-} = {
+  let token: Partial<definitions["tokens"]> = {
     symbol: '',
     name: '',
     address: '',
     website: ''
   }
 
+  let datasets: definitions["datasets"][] = []
+  let builds: definitions["builds"][] = []
+
   if (context?.params?.address && typeof context.params.address == "string") {
-    token = tokens[context.params.address]
+    const { data: tokens, error } = await supabase
+            .from<definitions["tokens"]>('tokens')
+            .select("*")
+            .eq("address", context.params.address)
+
+    if (tokens && tokens.length > 0) {
+      token = tokens[0]
+    }
+
+    const { data: buildsResp } = await supabase
+            .from<definitions["builds"]>('builds')
+            .select("*, datasets ( name ) ")
+            .eq("address", context.params.address)
+  
+    if (buildsResp) {
+      builds = buildsResp
+    }
   }
 
-  const tokenData = await getTokenData(context?.params?.address)
+  const { data: datasetsResp, error } = await supabase
+            .from<definitions["datasets"]>('datasets')
+            .select("*")
+  
+  if (datasetsResp) {
+    datasets = datasetsResp
+  }
+
+  // const tokenData = await getTokenData(context?.params?.address)
   
   return {
     props: {
         token: token,
-        ...tokenData
+        datasets,
+        builds
     }
   }
 }
 
-const Token = ({ token, uniqueSenders, repeatSenders }: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Token = ({ token, datasets, builds }: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter()
   const { address } = router.query
+
   return <div>
     <Head>
       <title> Tokens: {address} </title>
@@ -254,8 +185,7 @@ const Token = ({ token, uniqueSenders, repeatSenders }: InferGetStaticPropsType<
       <Breadcrumbs.Item> {address} </Breadcrumbs.Item>
     </Breadcrumbs>
           <> 
-            <h2>Token</h2>
-            <h3> {address} </h3>
+            <h2>{token.name}</h2>
             {token ? <> 
               <Description title="Symbol" content={token.symbol} />
               <Spacer h={1}/>
@@ -266,18 +196,22 @@ const Token = ({ token, uniqueSenders, repeatSenders }: InferGetStaticPropsType<
               <Description title="Website" content={<a href={token.website} target="_blank" rel="noreferrer"> {token.website}</a>} />
               <Spacer h={1}/>
 
-              <Description title={<a href={`https://etherscan.io/token/${address}`} target="_blank" rel="noreferrer"> Etherscan </a>} />
+              <Description 
+                title="Etherscan" 
+                content={<a href={`https://etherscan.io/token/${address}`} target="_blank" rel="noreferrer"> {address} </a>}
+                />
               <Spacer h={2}/>
 
             </> : <p> No token data </p> }
 
+
               
               <Tabs initialValue="1">
-                <Tabs.Item label="Unique Senders" value="1">
-                  <TokenAggregateTable tokenData={uniqueSenders} />
+                <Tabs.Item label="Token Datasets" value="1">
+                  <TokenDatasetsTable datasets={datasets} />
                 </Tabs.Item>
-                <Tabs.Item label="Repeat Senders" value="2">
-                <TokenAggregateTable tokenData={repeatSenders} />
+                <Tabs.Item label="Token Build History" value="2">
+                  <BuildTable builds={builds} />
                 </Tabs.Item>
               </Tabs>
       </>
@@ -286,18 +220,58 @@ const Token = ({ token, uniqueSenders, repeatSenders }: InferGetStaticPropsType<
   </div>
 }
 
-function TokenAggregateTable({ tokenData } : { tokenData: TokenData['repeatSenders']}) {
-  const renderAction: TableColumnRender<any> = (value, rowData, index) => {
+function TokenDatasetsTable({ datasets } : { datasets: definitions["datasets"][] }) {
+  const router = useRouter()
+  const { address } = router.query
+  const [, setToast] = useToasts()
+
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  }
+
+  async function requestBuild(build: Partial<definitions["builds"]>) {
+    if (build.address) {
+      const { data } = await supabase.from<definitions["builds"]>("builds")
+        .select("*")
+        .eq("address", build.address)
+        .eq("status", "Requested")
+        .eq("dataset", build.dataset)
+
+      if (data && data.length > 0) {
+        setToast({
+          text: 'This build has already been requested.',
+          type: "default",
+        })
+      } else {
+        const res = await supabase.from<definitions["builds"]>("builds").insert(build)
+        // Check that our status code is in the 200s,
+        // meaning the request was successful.
+        if (res.status < 300) {
+            refreshData();
+        }
+      }
+    }
+  }
+
+  const requestBuildAction: TableColumnRender<definitions["builds"]> = (value, dataset, index) => {
     return (
-      <Button auto scale={1/2} onClick={() => window.open(`https://etherscan.io/address/${rowData.to}`)}> View Address </Button>
+      <Button auto scale={1/2} onClick={() => {
+        if (address && typeof address == 'string') {
+          requestBuild({
+            dataset: dataset["id"],
+            address,
+            status: "Requested"
+          })}
+        }
+      }> Request Build </Button>
     )
   }
 
-  return <Table data={tokenData?.length ? tokenData.map(td => ({ ...td, etherscan: ""})) : []}>
-    <Table.Column prop="to" label="to" />
-    <Table.Column prop="from" label="from" />
-    <Table.Column prop="ContractName" label="Contract Name" />
-    <Table.Column prop="etherscan" label="Etherscan" render={renderAction} />
+  return <Table data={datasets?.length ? datasets : []} onRow={row => router.push(`/tokens/${address}/${row.relativeKey}`)}>
+    <Table.Column prop="name" label="Name" />
+    <Table.Column prop="description" label="Description" />
+    <Table.Column prop="id" label="Request Build" render={requestBuildAction} />
   </Table>
 }
 

@@ -1,14 +1,48 @@
 import Head from 'next/head'
 import { Page, Breadcrumbs, Fieldset, Button, Card } from '@geist-ui/react'
 import { useRouter } from 'next/router'
-import Particles from 'react-tsparticles'
+import {
+  injected,
+} from '../connectors'
+import { useWeb3React, Web3ReactProvider } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers'
+import React from 'react'
 
-export default function Home() {
+function getLibrary(provider: any): Web3Provider {
+  const library = new Web3Provider(provider)
+  library.pollingInterval = 12000
+  return library
+}
+
+export default function() {
+  return (
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Home />
+    </Web3ReactProvider>
+  )
+}
+
+function Home() {
+  const { activate, account, active, chainId, library } = useWeb3React<Web3Provider>()
+  // const { connector, library, chainId, account, activate, deactivate, active, error } = context
+  
+  console.log(account, active, chainId)
   const gh = 'https://github.com/geist-org/react'
   const docs = 'https://react.geist-ui.dev'
   const redirect = (url: string) => {
     window.open(url)
   }
+
+  React.useEffect((): any => {
+    async function loadData() {
+      if (!!library && account) {
+        const response = await library.getTransactionCount(account)
+        console.log(response)
+      }
+    }
+
+    loadData()
+  }, [library, chainId, account]) // ensures refresh if referential identity of library doesn't change across chainIds
 
   const router = useRouter()
 
@@ -18,7 +52,7 @@ export default function Home() {
         <title> Cryptosource </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Page >
+      <Page>
       <>
       <Breadcrumbs>
         <Breadcrumbs.Item onClick={() => router.push("/")}>Home</Breadcrumbs.Item>
@@ -29,9 +63,14 @@ export default function Home() {
   <h4>Token Communities </h4>
   <p> Explore the most popular contracts amongst a community of token holders. </p>
 </Card>
+<Button onClick={() => {
+                activate(injected)
+              }}> Injected </Button>
 
-           </>
+ </>
       </Page>
     </div>
   )
 }
+
+
